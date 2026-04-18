@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background-color: theme('colors.paper');
+  color: theme('colors.ink');
+  font-family: theme('fontFamily.sans');
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: none;
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* Handwritten accent underline */
+.ink-underline {
+  background-image: linear-gradient(transparent 80%, rgba(17, 17, 17, 0.15) 80%);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.hand-border {
+  border: 1.5px solid theme('colors.ink');
+  border-radius: 14px 18px 16px 20px / 18px 14px 20px 16px;
+}
+
+.hand-box {
+  border: 1.5px solid theme('colors.ink');
+  border-radius: 6px 8px 5px 7px / 7px 5px 8px 6px;
+}
+
+.hand-check {
+  stroke: theme('colors.ink');
+  stroke-width: 2;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
