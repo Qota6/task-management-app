@@ -68,16 +68,6 @@ export function MonthView() {
     } as never);
   }
 
-  async function decrement(task: Task, week: number) {
-    const match = await db.completions
-      .where('[taskId+year+month+weekOfMonth]')
-      .equals([task.id, cursor.year, cursor.month, week])
-      .reverse()
-      .sortBy('completedAt');
-    const latest = match[0];
-    if (latest) await db.completions.delete(latest.id);
-  }
-
   function shiftMonth(delta: number) {
     let m = cursor.month + delta;
     let y = cursor.year;
@@ -174,10 +164,6 @@ export function MonthView() {
                         <button
                           type="button"
                           onClick={() => increment(task, w.week)}
-                          onContextMenu={(e) => {
-                            e.preventDefault();
-                            decrement(task, w.week);
-                          }}
                           className="w-full h-10 flex items-center justify-center text-ink active:scale-95"
                           aria-label={`${task.name} 第${w.week}週 完了追加`}
                         >
@@ -191,7 +177,7 @@ export function MonthView() {
             </tbody>
           </table>
           <div className="mt-2 text-[10px] text-muted text-right">
-            タップで完了追加・長押しで1回取り消し
+            タップで完了追加・タスク名タップで編集と取り消し
           </div>
         </div>
       )}
