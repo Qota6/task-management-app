@@ -10,7 +10,7 @@ export interface Task {
   periodStart: string; // YYYY-MM-DD
   periodEnd: string; // YYYY-MM-DD
   recurrence: Recurrence;
-  // For monthly tasks, optional: restrict to specific week-of-month numbers (1..5). Empty/undefined = all weeks.
+  // For monthly tasks, optional: restrict to specific week-of-month numbers (1..6). Empty/undefined = all weeks.
   targetWeeks?: number[];
   createdAt: string; // ISO datetime
   archivedAt?: string;
@@ -23,7 +23,7 @@ export interface Completion {
   // For monthly tasks we also store which week of month this belongs to.
   year?: number;
   month?: number; // 1..12
-  weekOfMonth?: number; // 1..5
+  weekOfMonth?: number; // 1..6 (real calendar week within the month)
 }
 
 class TaskDB extends Dexie {

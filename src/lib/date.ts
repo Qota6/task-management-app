@@ -26,29 +26,41 @@ export function endOfMonth(d: Date): Date {
   return new Date(d.getFullYear(), d.getMonth() + 1, 0);
 }
 
-// Week of month: 1-indexed, based on day of month (1-7 => 1, 8-14 => 2, ...).
-export function weekOfMonth(d: Date): number {
-  return Math.floor((d.getDate() - 1) / 7) + 1;
+// First day of the week: 0 = Sunday, 1 = Monday. Switch here to change globally.
+export const WEEK_START: 0 | 1 = 0;
+
+// How many days the first calendar week of `month` overlaps with the previous month.
+function leadingOffset(year: number, month: number): number {
+  const first = new Date(year, month - 1, 1);
+  return (first.getDay() - WEEK_START + 7) % 7;
 }
 
-// Returns week ranges within a month: [{ week: 1, start, end }, ...]
+// Week of month based on the real calendar week containing `d`.
+// Week boundaries align to WEEK_START; first/last weeks of the month may be partial.
+export function weekOfMonth(d: Date): number {
+  const offset = leadingOffset(d.getFullYear(), d.getMonth() + 1);
+  return Math.floor((d.getDate() - 1 + offset) / 7) + 1;
+}
+
+// Returns week ranges within a month, clamped to month boundaries.
 export function weeksInMonth(year: number, month: number): {
   week: number;
   start: Date;
   end: Date;
 }[] {
-  const first = new Date(year, month - 1, 1);
-  const last = new Date(year, month, 0);
+  const offset = leadingOffset(year, month);
+  const totalDays = new Date(year, month, 0).getDate();
+  const totalWeeks = Math.ceil((totalDays + offset) / 7);
+
   const weeks: { week: number; start: Date; end: Date }[] = [];
-  let weekNum = 1;
-  let cursor = new Date(first);
-  while (cursor <= last) {
-    const start = new Date(cursor);
-    const endDay = Math.min(weekNum * 7, last.getDate());
-    const end = new Date(year, month - 1, endDay);
-    weeks.push({ week: weekNum, start, end });
-    cursor = new Date(year, month - 1, endDay + 1);
-    weekNum++;
+  for (let w = 1; w <= totalWeeks; w++) {
+    const startDay = Math.max(1, (w - 1) * 7 - offset + 1);
+    const endDay = Math.min(totalDays, w * 7 - offset);
+    weeks.push({
+      week: w,
+      start: new Date(year, month - 1, startDay),
+      end: new Date(year, month - 1, endDay),
+    });
   }
   return weeks;
 }
